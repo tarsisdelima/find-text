@@ -1,0 +1,37 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font: none;
+  font-size: 16px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.status {
+  font-size: .5em;
+}
+
+.status.on { color: green }
+.status.off { color: red  }
+
+.search {
+  border: 1px solid black;
+  border-radius: 5px;
+  font-family: inherit;
+  font-size: inherit;
+  padding: .5em;
+}
+
+.btn-search {
+  background-color: black;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  padding: calc(1em - 2px);
+}
+
+.searches {
+}
