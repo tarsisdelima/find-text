@@ -71,8 +71,18 @@ class Searcher {
 
 // websocket events
 io.on('connection', (socket) => {
-  const search_results = () => socket.emit('search results', searchers);
-  setInterval(search_results, 1000);
+  let looper_id = 0;
+  const looper_toogle = () => {
+    if (looper_id) {
+      clearInterval(looper_id);
+      looper_id = 0;
+    } else {
+      looper_id = setInterval(() => socket.emit('search results', searchers), 1000);
+    }
+
+    console.log('looper is', !!looper_id);
+    socket.emit('looper is', !!looper_id);
+  };
 
   socket.on('search start', search => {
     let searcher = searchers.find(s => s.term == search);
@@ -81,9 +91,9 @@ io.on('connection', (socket) => {
       searchers.push(searcher);
     }
     searcher.start();
-    search_results();
   });
-  
+
+  socket.on('looper toogle', () => looper_toogle());
 });
 
 http.listen(3000, () => console.log('available on http://localhost:3000'));

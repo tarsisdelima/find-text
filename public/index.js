@@ -3,6 +3,7 @@ const search = document.getElementsByClassName('search').item(0); // input
 const searches = document.getElementsByClassName('searches').item(0); // div
 const status = document.getElementsByClassName('status').item(0); // span
 const btnSearch = document.getElementsByClassName('btn-search').item(0); // button
+const btnLooper = document.getElementsByClassName('btn-looper').item(0); // button
 
 // handlers
 const setStatus = (s, id) => {
@@ -24,9 +25,14 @@ ws.on('connect', () => {
     console.log('res', res);
     searches.innerHTML = '';
     res.forEach((s) => {
-      const h1 = document.createElement('h1');
-      h1.innerText = s.term;
-      h1.classList.add('title');
+      const title = document.createElement('p');
+      title.innerText = s.term;
+      title.classList.add('title');
+      if (s.searching) {
+        title.classList.add('on');
+      } else {
+        title.classList.add('off');
+      }
 
       const ul = document.createElement('ul');
       ul.classList.add('found');
@@ -37,18 +43,16 @@ ws.on('connect', () => {
         ul.appendChild(li);
       });
 
-      const div = document.createElement('div');
-      div.innerText = 'procurando';
-      if (!s.searching) div.innerText = 'não ' + div.innerText;
-
       const block = document.createElement('div');
-      block.appendChild(h1);
+      block.classList.add('block');
+      block.appendChild(title);
       block.appendChild(ul);
-      block.appendChild(div);
 
       searches.appendChild(block);
     });
   });
+
+  ws.on('looper is', on => btnLooper.innerText = on ? 'Stop' : 'Start');
 
   ws.on('disconnect', () => {
     setStatus('off');
@@ -59,6 +63,10 @@ ws.on('connect', () => {
     const val = search.value;
     console.log('search start', val);
     ws.emit('search start', val);
+  };
+
+  btnLooper.onclick = () => {
+    ws.emit('looper toogle');
   };
 
 });
